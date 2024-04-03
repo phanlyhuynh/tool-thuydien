@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-  </head>
-  <body>
-    <span>Đường dẫn:</span><input type="text"><br>
-    <span>Tên đăng nhập:</span> <input type="text">
-    <span>Mật khẩu:</span> <input type="text"><br>
-    <span>Tải dữ liệu phút</span>
-    <select name="time" id="time">
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-    </select>phút/1 lần<br>
-    <p id="info"></p>
-    <button id="startButton">Start</button>
-    <button id="stopButton">Stop</button>
-    <script src="./renderer.js"></script>
-  </body>  
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <span>Ký hiệu công trình:</span><span class="required">*</span> <input id="url" name="url" type="text"><br><br>
+  <span>Tên đăng nhập:</span><span class="required">*</span> <input id="username" name="username" type="text">
+  <span>Mật khẩu:</span><span class="required">*</span> <input id="password" name="password" type="password"><input type="checkbox" id="showPassword">Hiển thị mật khẩu<br><br>
+  Chọn nơi lưu trữ file:<span class="required">*</span> <input id="url-save-file" name="url-save-file" type="text" disabled><button id="select-save-file">Chọn</button><br>
+  <br>
+  <span>Tải dữ liệu</span>
+  <select name="time" id="time">
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="15">15</option>
+    <option value="20">20</option>
+    <option value="25">25</option>
+    <option value="30">30</option>
+  </select>phút/1 lần<br>
+  <p id="error-message"></p>
+  <button id="startButton">Bắt đầu</button>
+  <button id="stopButton">Tạm dừng</button>
+  <script src="./renderer.js"></script>
+</body>
+
 </html>
