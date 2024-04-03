@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+  </head>
+  <body>
+    <span>Đường dẫn:</span><input type="text"><br>
+    <span>Tên đăng nhập:</span> <input type="text">
+    <span>Mật khẩu:</span> <input type="text"><br>
+    <span>Tải dữ liệu phút</span>
+    <select name="time" id="time">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+    </select>phút/1 lần<br>
+    <p id="info"></p>
+    <button id="startButton">Start</button>
+    <button id="stopButton">Stop</button>
+    <script src="./renderer.js"></script>
+  </body>  
+</html>
