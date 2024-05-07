@@ -13,9 +13,25 @@ function createWindow() {
     },
   });
 
+  mainWindow.webContents.on('did-finish-load', () => {
+    const dataSavePath = path.join(app.getAppPath(), 'data.txt')
+    if (fs.existsSync(dataSavePath)) {
+      fs.readFile(dataSavePath, 'utf8', (err, data) => {
+        if (err) {
+          console.error('Lỗi khi đọc file:', err);
+          return;
+        }
+        console.log(JSON.parse(data), 'haha')
+        mainWindow.webContents.send('data-from-main', {
+          type: 'startup',
+          message: JSON.parse(data)
+        })
+      });
+    }
+  });
+
   let setIntervalID;
   ipcMain.on("crawl", (event, data) => {
-    console.log(data.urlSaveFile, data.urlSaveFile == '')
     const options = {
       auth: {
         username: data.username,
@@ -31,58 +47,81 @@ function createWindow() {
 
       return
     }
+
+    const dataSavePath = path.join(app.getAppPath(), 'data.txt')
+    if (!fs.existsSync(dataSavePath)) {
+      fs.unlink(dataSavePath, (err) => {
+        if (err) {
+          console.error('Lỗi khi xóa file:', err);
+          return;
+        }
+        console.log('File đã được xóa thành công.');
+      });
+      
+    }
+
+    fs.writeFile(dataSavePath, JSON.stringify(data), "utf-8", (err) => {
+      if (err) {
+        console.error("Error saving data:", err);
+      } else {
+        console.log("Data saved successfully");
+      }
+    });
+
+    console.log(dataSavePath, 'dataSavePath')
     setIntervalID = setInterval(async function () {
       try {
-        console.log(data)
-        const response = await axios.post(process.env.API_URL, data, options);
-        response.data.forEach(item => {
-          item.noi_dung.forEach(noidung => {
-            let row = '';
-            row += dayjs(noidung.thoi_gian, 'YYYYMMDDHHmmss').format('DD/MM/YYYY HH:mm') + '        ';
-            console.log(noidung.noi_dung, 'asasa')
+        const response = await axios.post(`${process.env.API_URL}/quantrac`, data, options);
+        let text = '';
+        await response.data.forEach(async (item) => {
+          console.log(item, 'item')
+          let row = '';
+          await item.noi_dung.forEach(async noidung => {
+            row += dayjs(noidung.thoi_gian, 'YYYYMMDDHHmmss').format('DD/MM/YYYY HH:mm') + ',';
             row += noidung.noi_dung.thuong_luu ? noidung.noi_dung.thuong_luu[2] : 0;
-            row += '        ';
+            row += ',';
             row += noidung.noi_dung.ha_luu ? noidung.noi_dung.ha_luu[2] : 0;
-            row += '    ';
+            row += ',';
 
-            noidung.noi_dung.to_may.forEach(tomay => {
+            await noidung.noi_dung.to_may.forEach(tomay => {
               tomay.forEach(tm => {
                 if (tm[1] == 'CONGSUAT') {
                   row += tm[2] ? tm[2] : 0;
-                  row += '    ';
+                  row += ',';
                 }
                 if (tm[1] == 'LUULUONG') {
                   row += tm[2] ? tm[2] : 0;
-                  row += '    ';
+                  row += ',';
                 }
               })
             })
 
             row += noidung.noi_dung.qua_tran ? noidung.noi_dung.qua_tran[2] : 0;
-
-            if (!fs.existsSync(data.urlSaveFile)) {
-              fs.writeFile(data.urlSaveFile, row + '\n', "utf-8", (err) => {
-                if (err) {
-                  console.error("Error saving data:", err);
-                } else {
-                  console.log("Data saved successfully");
-                }
-              });
-            } else {
-              fs.appendFile(data.urlSaveFile, row + '\n', (err) => {
-                if (err) {
-                  console.error('Error saving data:', err);
-                } else {
-                  console.log('Data saved successfully!');
-                }
-              });
-            }
+            row += '\n'
           })
+          text += row;
         });
+        if (!fs.existsSync(data.urlSaveFile)) {
+          fs.writeFile(data.urlSaveFile, text, "utf-8", (err) => {
+            if (err) {
+              console.error("Error saving data:", err);
+            } else {
+              console.log("Data saved successfully");
+            }
+          });
+        } else {
+          fs.appendFile(data.urlSaveFile, text, (err) => {
+            if (err) {
+              console.error('Error saving data:', err);
+            } else {
+              console.log('Data saved successfully!');
+            }
+          });
+        }
       } catch (error) {
         console.log(error)
       }
-    }, data.time * 1000); // * 60 (phut)
+    }, data.time * 1000 * 60); // (phut)
   });
 
   ipcMain.on("stopCrawl", (event) => {
@@ -109,6 +148,10 @@ function createWindow() {
 
   mainWindow.loadFile("index.html");
 }
+
+app.setLoginItemSettings({
+  openAtLogin: true,
+})
 
 app.whenReady().then(() => {
   createWindow();

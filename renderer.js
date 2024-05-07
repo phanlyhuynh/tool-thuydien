@@ -3,7 +3,7 @@ const stopButton = document.getElementById('stopButton');
 const urlInput = document.getElementById('url');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
-const timeSelect = document.getElementById('time');
+// const timeSelect = document.getElementById('time');
 const urlSaveFile = document.getElementById('url-save-file');
 const showPassword = document.getElementById('showPassword');
 const selectSaveFile = document.getElementById('select-save-file');
@@ -18,7 +18,7 @@ setButton.addEventListener('click', () => {
   errorMessage.innerText = ''
 
   const data = {
-    time: timeSelect.value,
+    time: 1,
     username: usernameInput.value,
     password: passwordInput.value,
     url: urlInput.value,
@@ -58,6 +58,6 @@ window.onload = async function () {
     stopButton.style.display = 'none';
   }
 }
-window.electronAPI.getDataFromMain((data) => {
-  console.log('data rerednder', data)
-})
+// window.electronAPI.getDataFromMain((data) => {
+//   console.log('data rerednder', data)
+// })
