@@ -1,6 +1,7 @@
 const setButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const urlInput = document.getElementById('url');
+const machineInput = document.getElementById('machine');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
 // const timeSelect = document.getElementById('time');
@@ -22,7 +23,8 @@ setButton.addEventListener('click', () => {
     username: usernameInput.value,
     password: passwordInput.value,
     url: urlInput.value,
-    urlSaveFile: urlSaveFile.value
+    urlSaveFile: urlSaveFile.value,
+    machine: machineInput.value.replace(/\s/g, '').toUpperCase() || 'MAY1'
   }
 
   window.electronAPI.setCrawl(data);

@@ -3,6 +3,8 @@ const fs = require("fs");
 const path = require("node:path");
 const axios = require('axios');
 const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc'); // Import plugin utc để làm việc với múi giờ
+const timezone = require('dayjs/plugin/timezone'); 
 
 require('dotenv').config();
 
@@ -14,7 +16,7 @@ function createWindow() {
   });
 
   mainWindow.webContents.on('did-finish-load', () => {
-    const dataSavePath = path.join(app.getAppPath(), 'data.txt')
+    const dataSavePath = path.join(app.getPath('documents'), 'Load-Data-Tool.txt')
     if (fs.existsSync(dataSavePath)) {
       fs.readFile(dataSavePath, 'utf8', (err, data) => {
         if (err) {
@@ -32,6 +34,11 @@ function createWindow() {
 
   let setIntervalID;
   ipcMain.on("crawl", (event, data) => {
+    console.log('Start crawl')
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    const searchTime = dayjs().subtract(1, 'days').tz('Asia/Ho_Chi_Minh').format('YYYYMMDDHHmm') + '00'
+
     const options = {
       auth: {
         username: data.username,
@@ -48,8 +55,8 @@ function createWindow() {
       return
     }
 
-    const dataSavePath = path.join(app.getAppPath(), 'data.txt')
-    if (!fs.existsSync(dataSavePath)) {
+    const dataSavePath = path.join(app.getPath('documents'), 'Load-Data-Tool.txt')
+    if (fs.existsSync(dataSavePath)) {
       fs.unlink(dataSavePath, (err) => {
         if (err) {
           console.error('Lỗi khi xóa file:', err);
@@ -70,7 +77,7 @@ function createWindow() {
     console.log(dataSavePath, 'dataSavePath')
     setIntervalID = setInterval(async function () {
       try {
-        const response = await axios.post('https://huynhpl.me/thuydien/api/quantrac', data, options);
+        const response = await axios.post('https://huynhpl.me/thuydien/api/quantrac', { ...data, time: searchTime }, options);
         let text = '';
         await response.data.forEach(async (item) => {
           console.log(item, 'item')
@@ -149,7 +156,7 @@ function createWindow() {
 }
 
 app.setLoginItemSettings({
-  openAtLogin: false,
+  openAtLogin: true,
 })
 
 app.whenReady().then(() => {

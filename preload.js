@@ -10,7 +10,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
       const setButton = document.getElementById('startButton');
       const stopButton = document.getElementById('stopButton');
       const errorMessage = document.getElementById('error-message');
-      console.log(data, 'aaaaaaaaaaaaaaaaaaaaaaaa')
 
       if (data && data.type == 'success' && data.input == 'url') {
         urlSaveFile.value = data.data
@@ -26,11 +25,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
         const passwordInput = document.getElementById('password');
         const urlSaveFile = document.getElementById('url-save-file');
         const startButton = document.getElementById('startButton');
+        const machineInput = document.getElementById('machine');
 
         urlInput.value = data.message.url
         usernameInput.value = data.message.username
         passwordInput.value = data.message.password
         urlSaveFile.value = data.message.urlSaveFile
+        machineInput.value = data.message.machine
 
         startButton.click()
       }
