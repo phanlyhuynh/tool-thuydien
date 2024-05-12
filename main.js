@@ -57,7 +57,6 @@ function createWindow() {
         }
         console.log('File đã được xóa thành công.');
       });
-      
     }
 
     fs.writeFile(dataSavePath, JSON.stringify(data), "utf-8", (err) => {
@@ -71,7 +70,7 @@ function createWindow() {
     console.log(dataSavePath, 'dataSavePath')
     setIntervalID = setInterval(async function () {
       try {
-        const response = await axios.post(`${process.env.API_URL}/quantrac`, data, options);
+        const response = await axios.post('https://huynhpl.me/thuydien/api/quantrac', data, options);
         let text = '';
         await response.data.forEach(async (item) => {
           console.log(item, 'item')
@@ -150,7 +149,7 @@ function createWindow() {
 }
 
 app.setLoginItemSettings({
-  openAtLogin: true,
+  openAtLogin: false,
 })
 
 app.whenReady().then(() => {

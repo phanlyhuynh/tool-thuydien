@@ -1,7 +1,7 @@
 {
-  "name": "crawl-data-tool",
+  "name": "Load-Data-Tool",
   "version": "1.0.0",
-  "description": "crawl-data-tool",
+  "description": "Load-Data-Tool",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
